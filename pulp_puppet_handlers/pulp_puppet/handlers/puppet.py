@@ -12,6 +12,7 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 import logging
+import subprocess
 
 from pulp.agent.lib import handler
 from pulp.agent.lib.report import BindReport, CleanReport, ContentReport
@@ -36,10 +37,8 @@ class ModuleHandler(handler.ContentHandler):
         :rtype:     pulp.agent.lib.report.ContentReport
         """
         logger.info('installing modules %s' % str(units))
-
-        report = ContentReport()
-        report.set_succeeded()
-        return report
+        url = options.get('url')
+        return self._perform_operation('install', units, url)
 
     def update(self, conduit, units, options):
         """
@@ -54,7 +53,8 @@ class ModuleHandler(handler.ContentHandler):
         :return:    An update report.
         :rtype:     pulp.agent.lib.report.ContentReport
         """
-        raise NotImplementedError()
+        logger.info('installing modules %s' % str(units))
+        return self._perform_operation('upgrade', units)
 
     def uninstall(self, conduit, units, options):
         """
@@ -70,10 +70,7 @@ class ModuleHandler(handler.ContentHandler):
         :rtype:     pulp.agent.lib.report.ContentReport
         """
         logger.info('removing modules %s' % units)
-
-        report = ContentReport()
-        report.set_succeeded()
-        return report
+        return self._perform_operation('uninstall', units)
 
     def profile(self, conduit):
         """
@@ -86,6 +83,22 @@ class ModuleHandler(handler.ContentHandler):
         :rtype:     pulp.agent.lib.report.ProfileReport
         """
         raise NotImplementedError()
+
+    @staticmethod
+    def _perform_operation(operation, units, url=None):
+        report = ContentReport()
+        for unit in units:
+            try:
+                args = ['puppet', 'module', operation, '--version', unit['version'], '--ignore-dependencies', '%s/%s' % (unit['author'], unit['name'])]
+                if url:
+                    args.insert(5, '--module_repository')
+                    args.insert(6, url)
+                subprocess.check_call(args)
+            except subprocess.CalledProcessError:
+                report.set_failed()
+                return report
+        report.set_succeeded()
+        return report
 
 
 class BindHandler(handler.BindHandler):
