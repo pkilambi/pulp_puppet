@@ -18,7 +18,7 @@
 
 Name: pulp-puppet
 Version: 2.1.3
-Release: 1
+Release: 2
 Summary: Support for Puppet content in the Pulp platform
 Group: Development/Languages
 License: GPLv2
@@ -197,6 +197,9 @@ uninstall; Puppet profile reporting; and Linux specific commands such as system 
 
 
 %changelog
+* Tue Jan 29 2013 Pradeep Kilambi <pkilambi@redhat.com> 2.1.3-2
+- 
+
 * Tue Jan 29 2013 Pradeep Kilambi <pkilambi@redhat.com> 2.1.3-1
 - 
 
