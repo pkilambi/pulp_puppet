@@ -15,9 +15,12 @@ import base64
 import json
 import re
 
+from pulp.server.db import connection
 import web
 
 from pulp_puppet.forge import releases
+
+connection.initialize()
 
 urls = (
     '/releases.json', 'Releases',
@@ -40,9 +43,10 @@ class Releases(object):
             # apparently our version of web.py, 0.36, doesn't take a message
             # parameter for error handlers like this one. Ugh.
             return web.badrequest()
+        version =  web.input().get('version')
 
         web.header('Content-Type', 'application/json')
-        data = releases.view(*credentials, module_name=module_name)
+        data = releases.view(*credentials, module_name=module_name, version=version)
         return json.dumps(data)
 
     @staticmethod
@@ -58,6 +62,7 @@ class Releases(object):
         module_name = web.input().get('module', '')
         if MODULE_PATTERN.match(module_name):
             return module_name
+
 
 
 if __name__ == '__main__':
