@@ -17,7 +17,7 @@
 # ---- Pulp (puppet) -----------------------------------------------------------
 
 Name: pulp-puppet
-Version: 2.1.4
+Version: 2.1.5
 Release: 1
 Summary: Support for Puppet content in the Pulp platform
 Group: Development/Languages
@@ -197,6 +197,9 @@ uninstall; Puppet profile reporting; and Linux specific commands such as system 
 
 
 %changelog
+* Wed Jan 30 2013 Pradeep Kilambi <pkilambi@redhat.com> 2.1.5-1
+- 
+
 * Tue Jan 29 2013 Pradeep Kilambi <pkilambi@redhat.com> 2.1.4-1
 - 
 
